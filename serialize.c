@@ -214,29 +214,34 @@ wb_boolean(struct write_block *wb, int boolean) {
 }
 
 static inline void
-wb_integer(struct write_block *wb, int v) {
-	if (v == 0) {
-		int n = COMBINE_TYPE(TYPE_NUMBER , 0);
-		wb_push(wb, &n, 1);
-	} else if (v<0) {
-		int n = COMBINE_TYPE(TYPE_NUMBER , 4);
-		wb_push(wb, &n, 1);
-		wb_push(wb, &v, 4);
-	} else if (v<0x100) {
-		int n = COMBINE_TYPE(TYPE_NUMBER , 1);
-		wb_push(wb, &n, 1);
-		uint8_t byte = (uint8_t)v;
-		wb_push(wb, &byte, 1);
-	} else if (v<0x10000) {
-		int n = COMBINE_TYPE(TYPE_NUMBER , 2);
-		wb_push(wb, &n, 1);
-		uint16_t word = (uint16_t)v;
-		wb_push(wb, &word, 2);
-	} else {
-		int n = COMBINE_TYPE(TYPE_NUMBER , 4);
-		wb_push(wb, &n, 1);
-		wb_push(wb, &v, 4);
-	}
+wb_integer(struct write_block *wb, double v) {
+    if (v == 0) {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 0);
+        wb_push(wb, &n, 1);
+    } else if (v<0) {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 4);
+        wb_push(wb, &n, 1);
+        wb_push(wb, &v, 4);
+    } else if (v<0x100) {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 1);
+        wb_push(wb, &n, 1);
+        uint8_t byte = (uint8_t)v;
+        wb_push(wb, &byte, 1);
+    } else if (v<0x10000) {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 2);
+        wb_push(wb, &n, 1);
+        uint16_t word = (uint16_t)v;
+        wb_push(wb, &word, 2);
+    } else if (v<0x100000000) {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 4);
+        wb_push(wb, &n, 1);
+        uint32_t dword = (uint32_t)v;
+        wb_push(wb, &dword, 4);
+    } else {
+        int n = COMBINE_TYPE(TYPE_NUMBER , 8); 
+        wb_push(wb, &n, 1); 
+        wb_push(wb, &v, 8); 
+    } 
 }
 
 static inline void
